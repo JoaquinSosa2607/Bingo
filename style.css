@@ -1,0 +1,20 @@
+/* Estilos previamente definidos */
+
+.card {
+    display: inline-block;
+    width: calc(10% - 18px);
+    margin: 5px;
+    width: 80px;
+    height: 80px;
+    background-color: #ccc;
+    color: #fff;
+    text-align: center;
+    line-height: 80px;
+    border-radius: 5px;
+    border: black;
+    border-width: 5px;
+}
+
+.extraccion {
+    background-color: #28a745;
+}
