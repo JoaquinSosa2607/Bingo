@@ -1,18 +1,23 @@
 /* Estilos previamente definidos */
 
+#bolillero {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
 .card {
-    display: inline-block;
-    width: calc(10% - 18px);
-    margin: 5px;
     width: 80px;
     height: 80px;
     background-color: #ccc;
     color: #fff;
     text-align: center;
     line-height: 80px;
+    margin: 5px;
     border-radius: 5px;
     border: black;
     border-width: 5px;
+    flex: 0 0 10%; /* Cada fila tendrá 10 elementos */
 }
 
 .extraccion {

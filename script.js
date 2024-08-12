@@ -2,10 +2,10 @@ let numerosDisponibles = [];
 
 window.onload = function () {
     const bolillero = document.getElementById("bolillero");
-    for (let i = 1; i <= 99; i++) {
+    for (let i = 1; i <= 90; i++) {
         numerosDisponibles.push(i);
         let card = document.createElement("div");
-        card.classList.add("card", "col-1", "m-1", "text-center");
+        card.classList.add("card", "text-center");
         card.innerText = i;
         bolillero.appendChild(card);
     }
@@ -31,4 +31,12 @@ function cambiarFondoVerde(numeroExtraido) {
         `#bolillero .card:nth-child(${numeroExtraido})`
     );
     card.classList.add("extraccion");
+}
+
+function mostrarFelicitacion() {
+    $("#felicitacionModal").modal("show");
+}
+
+function reiniciarJuego() {
+    location.reload();  // Recarga la página para reiniciar el juego
 }
