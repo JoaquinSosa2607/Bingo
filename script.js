@@ -38,5 +38,5 @@ function mostrarFelicitacion() {
 }
 
 function reiniciarJuego() {
-    location.reload();  // Recarga la página para reiniciar el juego
+    location.reload();
 }
