@@ -4,37 +4,179 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SOSSINGO</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container-fluid d-flex flex-column justify-content-center align-items-center h-100">
-    <h1 class="text-center">SOSSINGO</h1>
-    <div id="bolillero" class="row justify-content-center">
+
+  <!-- ░░ HOME ░░ -->
+  <div id="view-home" class="view active">
+    <div class="home-glow"></div>
+    <div class="home-content">
+      <div class="home-hero">
+        <h1 class="logo">SOSSINGO</h1>
+        <p class="tagline">elegí tu rol</p>
+      </div>
+      <div class="home-btns">
+        <button class="mode-btn" onclick="showView('bolillero')">
+          <span class="mode-idx">01</span>
+          <span class="mode-title">Bolillero</span>
+          <span class="mode-desc">Extraé números para el juego</span>
+          <span class="mode-arrow">→</span>
+        </button>
+        <button class="mode-btn" onclick="showView('carton')">
+          <span class="mode-idx">02</span>
+          <span class="mode-title">Jugador</span>
+          <span class="mode-desc">Generá tu cartón y marcá números</span>
+          <span class="mode-arrow">→</span>
+        </button>
+      </div>
+      <p class="home-foot">Números · 1 — 99</p>
     </div>
-    <button id="extraer" class="btn btn-primary mt-3" onclick="extraerNumero()">Extraer Número</button>
   </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="numeroExtraidoModal" tabindex="-1" role="dialog" aria-labelledby="numeroExtraidoModalLabel" aria-hidden="true" onhidden="cambiarFondoVerde()">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="numeroExtraidoModalLabel">Número Extraído</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+  <!-- ░░ BOLILLERO ░░ -->
+  <div id="view-bolillero" class="view">
+    <header class="app-bar">
+      <button class="btn-nav" onclick="showView('home')">← Volver</button>
+      <span class="bar-title">Bolillero</span>
+      <button class="btn-nav end" onclick="resetBolillero()">Reiniciar</button>
+    </header>
+    <main class="boli-main">
+      <div class="boli-stage">
+        <div class="main-ball" id="main-ball">
+          <span id="main-num">—</span>
         </div>
-        <div class="modal-body">
-          <p id="numeroExtraido"></p>
+        <p class="ball-sub" id="ball-sub">99 disponibles</p>
+      </div>
+
+      <div class="last-nums hidden" id="last-nums"></div>
+
+      <!-- Sala bar -->
+      <div class="sala-bar">
+        <div id="sala-idle">
+          <button class="btn-sala" onclick="crearSala()">+ Crear Sala</button>
         </div>
+        <div class="sala-active hidden" id="sala-active">
+          <div class="sala-active-header">
+            <span class="sala-key-label">Sala</span>
+            <span class="sala-key" id="sala-key">----</span>
+            <button class="btn-sala-copy" id="btn-copy" onclick="copiarCodigo()">Copiar código</button>
+          </div>
+          <div class="sala-jugadores" id="sala-jugadores">
+            <span class="sala-waiting">Esperando jugadores…</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="linea-alert hidden" id="linea-alert">
+        <span class="bingo-alert-icon">🏆</span>
+        <div class="bingo-alert-info">
+          <p class="linea-alert-title">¡Línea completada!</p>
+          <div class="linea-callers" id="linea-callers"></div>
+        </div>
+      </div>
+
+      <div class="bingo-alert hidden" id="bingo-alert">
+        <span class="bingo-alert-icon">🎉</span>
+        <div class="bingo-alert-info">
+          <p class="bingo-alert-title">¡BINGO llamado!</p>
+          <div class="bingo-callers" id="bingo-callers"></div>
+        </div>
+      </div>
+
+      <button class="btn-pill" id="btn-extract" onclick="extraerNumero()">Extraer</button>
+      <p class="section-label">Historial</p>
+      <div class="boli-grid" id="boli-grid"></div>
+    </main>
+  </div>
+
+  <!-- ░░ CARTÓN ░░ -->
+  <div id="view-carton" class="view">
+    <header class="app-bar">
+      <button class="btn-nav" onclick="showView('home')">← Volver</button>
+      <span class="bar-title">Mi Cartón</span>
+      <button class="btn-nav end" id="btn-nuevo" onclick="handleNuevo()">Nuevo</button>
+    </header>
+    <main class="carton-main">
+      <div class="carton-card">
+        <div class="carton-topbar">
+          <span class="carton-brand">SOSSINGO</span>
+          <span class="carton-player" id="carton-player"></span>
+          <span class="carton-serial" id="carton-serial">#0000</span>
+        </div>
+        <div class="carton-grid prelocked" id="carton-grid"></div>
+      </div>
+
+      <div class="game-setup" id="game-setup">
+        <input
+          type="text"
+          id="player-name"
+          class="name-input"
+          placeholder="Tu nombre (opcional)"
+          maxlength="20"
+          autocomplete="off"
+          onkeydown="if(event.key==='Enter') lockCard()"
+        >
+        <input
+          type="text"
+          id="sala-input"
+          class="name-input sala-code-field"
+          placeholder="Código de sala (opcional)"
+          maxlength="4"
+          autocomplete="off"
+          oninput="this.value = this.value.toUpperCase()"
+        >
+        <button class="btn-pill" onclick="lockCard()">Comenzar ▶</button>
+      </div>
+
+      <div class="sala-chip hidden" id="sala-chip">
+        <span class="sala-dot"></span>
+        <span id="sala-chip-label">Sala ----</span>
+      </div>
+
+      <div class="prog-row hidden" id="prog-row">
+        <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+        <span class="prog-lbl" id="prog-lbl">0 / 15</span>
+      </div>
+      <p class="carton-hint" id="carton-hint">Ingresá tu nombre y presioná Comenzar</p>
+    </main>
+
+    <div class="bingo-veil hidden" id="bingo-veil">
+      <div class="bingo-popup">
+        <p class="bingo-bang">!</p>
+        <h2 class="bingo-word">BINGO</h2>
+        <p class="bingo-sub">¡Todos los números marcados!</p>
+        <button class="btn-pill outline" onclick="generateNewCard()">Nuevo Cartón</button>
+      </div>
+    </div>
+
+    <!-- Línea celebration (auto-dismiss) -->
+    <div class="linea-veil hidden" id="linea-veil">
+      <div class="linea-popup">
+        <span class="linea-trophy">🏆</span>
+        <h2 class="linea-word">¡LÍNEA!</h2>
+        <p class="linea-hint">Seguí jugando…</p>
+      </div>
+    </div>
+
+    <!-- Host reset notification -->
+    <div class="reset-veil hidden" id="reset-veil">
+      <div class="reset-popup">
+        <span class="reset-icon">🔄</span>
+        <h2 class="reset-title">El host reinició el juego</h2>
+        <p class="reset-sub">Tu partida actual quedó sin efecto</p>
+        <button class="btn-pill" onclick="resetAndRejoin()">Nuevo Cartón en la misma sala</button>
+        <button class="btn-pill outline" onclick="exitFromReset()">Salir al inicio</button>
       </div>
     </div>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- Firebase SDKs (compat — no bundler needed) -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
